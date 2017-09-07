@@ -1,5 +1,6 @@
 package com.yk.sod.bolt;
 
+import org.apache.storm.Constants;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.BasicOutputCollector;
 import org.apache.storm.topology.OutputFieldsDeclarer;
@@ -20,6 +21,16 @@ public class DataTotalCountBolt  extends BaseBasicBolt {
 
     @Override
     public void execute(Tuple tuple, BasicOutputCollector basicOutputCollector) {
+        //定时持久化数据
+        if(tuple.getSourceComponent().equals(Constants.SYSTEM_COMPONENT_ID)){
+
+
+        }else{
+
+
+        }
+
+
 
     }
 

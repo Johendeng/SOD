@@ -14,7 +14,7 @@ import java.util.Properties;
  */
 public class RedisOperation {
 
-    private static Jedis jedis;
+    public static Jedis jedis;
 
     public Record getRecord(String keyId){
         if(jedis == null) {
