@@ -1,17 +1,18 @@
 package com.yk.sod.spout;
 
+import backtype.storm.spout.SpoutOutputCollector;
+import backtype.storm.task.TopologyContext;
+import backtype.storm.topology.IRichSpout;
+import backtype.storm.topology.OutputFieldsDeclarer;
+import backtype.storm.tuple.Fields;
+import backtype.storm.tuple.Values;
 import com.yk.sod.util.PropertiesUtil;
 import kafka.consumer.Consumer;
 import kafka.consumer.ConsumerConfig;
 import kafka.consumer.ConsumerIterator;
 import kafka.consumer.KafkaStream;
 import kafka.javaapi.consumer.ConsumerConnector;
-import org.apache.storm.spout.SpoutOutputCollector;
-import org.apache.storm.task.TopologyContext;
-import org.apache.storm.topology.OutputFieldsDeclarer;
-import org.apache.storm.topology.base.BaseRichSpout;
-import org.apache.storm.tuple.Fields;
-import org.apache.storm.tuple.Values;
+
 
 import java.io.FileInputStream;
 import java.util.HashMap;
@@ -24,15 +25,68 @@ import java.util.Properties;
  */
 
 
-public class DataSpout extends BaseRichSpout{
-    private SpoutOutputCollector collector;
-    private ConsumerConnector consumerConnector;
+public class DataSpout implements IRichSpout{
+    SpoutOutputCollector collector;
+    private ConsumerConnector consumer;
     private String topic;
-    private PropertiesUtil propertiesUtil;
 
-    public DataSpout(){
-        Map props = propertiesUtil.getProperties("kafka.properties");
-        this.topic = (String) props.get("topic");
+    public DataSpout(String topic) {
+        this.topic = topic;
+    }
+
+    @Override
+    public void open(Map map, TopologyContext topologyContext, SpoutOutputCollector collector) {
+        this.collector = collector;
+    }
+
+    @Override
+    public void close() {
+
+    }
+
+    @Override
+    public void activate() {
+        this.consumer = Consumer.createJavaConsumerConnector(createConsumerConfig());
+        Map<String, Integer> topickMap = new HashMap<String, Integer>();
+        topickMap.put(topic, new Integer(1));
+        Map<String, List<KafkaStream<byte[], byte[]>>> streamMap = consumer.createMessageStreams(topickMap);
+        KafkaStream<byte[], byte[]> stream = streamMap.get(topic).get(0);
+        ConsumerIterator<byte[], byte[]> it = stream.iterator();
+        while (it.hasNext()) {
+            String value = new String(it.next().message());
+            System.out.println("数据:"+value);
+            collector.emit(new Values(value), value);
+        }
+    }
+
+    @Override
+    public void deactivate() {
+
+    }
+
+    @Override
+    public void nextTuple() {
+
+    }
+
+    @Override
+    public void ack(Object o) {
+
+    }
+
+    @Override
+    public void fail(Object o) {
+
+    }
+
+    @Override
+    public void declareOutputFields(OutputFieldsDeclarer declarer) {
+        declarer.declare(new Fields("data"));
+    }
+
+    @Override
+    public Map<String, Object> getComponentConfiguration() {
+        return null;
     }
 
     private static ConsumerConfig createConsumerConfig() {
@@ -47,29 +101,4 @@ public class DataSpout extends BaseRichSpout{
         return new ConsumerConfig(prop);
     }
 
-    @Override
-    public void open(Map map, TopologyContext topologyContext, SpoutOutputCollector controller) {
-        this.collector = controller;
-        propertiesUtil = new PropertiesUtil();
-    }
-
-    @Override
-    public void nextTuple() {
-        this.consumerConnector = Consumer.createJavaConsumerConnector(createConsumerConfig());
-        Map<String , Integer> topicMap = new HashMap<>();
-        topicMap.put(topic,new Integer(1));
-        Map<String, List<KafkaStream<byte[], byte[]>>> streamMap = consumerConnector.createMessageStreams(topicMap);
-        KafkaStream<byte[], byte[]> stream = streamMap.get(topic).get(0);
-        ConsumerIterator<byte[], byte[]> it = stream.iterator();
-        while (it.hasNext()){
-            String value = new String(it.next().message());
-            collector.emit(new Values(value),value);
-        }
-
-    }
-
-    @Override
-    public void declareOutputFields(OutputFieldsDeclarer declarer) {
-        declarer.declare(new Fields("data"));
-    }
 }

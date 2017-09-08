@@ -14,11 +14,11 @@ import java.util.Properties;
  */
 public class RedisOperation {
 
-    public static Jedis jedis;
+    public Jedis jedis;
 
-    public Record getRecord(String keyId){
+    public Jedis getJedis(){
         if(jedis == null) {
-            String path = PropertiesUtil.class.getClassLoader().getResource("jdbc.properties").getPath();
+            String path = PropertiesUtil.class.getClassLoader().getResource("redis.properties").getPath();
             Properties props = new Properties();
             try {
                 FileInputStream in = new FileInputStream(path);
@@ -26,13 +26,19 @@ public class RedisOperation {
                 in.close();
                 String host = props.getProperty("redis.host");        //地址
                 String port = props.getProperty("redis.port");        //端口
-                String pass = props.getProperty("redis.pass");        //密码
+//                String pass = props.getProperty("redis.pass");        //密码
                 jedis = new Jedis(host, Integer.parseInt(port));
-                jedis.auth(pass);
+//                jedis.auth(pass);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+        return jedis;
+    }
+
+
+    public Record getRecord(String keyId){
+
         byte[] byteRecord = jedis.get(keyId.getBytes());
         return (Record) SerializeUtil.unserialize(byteRecord);
     }

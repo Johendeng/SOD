@@ -45,30 +45,28 @@ public class Record implements Serializable {
         Map<String,Integer> outNameRecord = outRecord.getNameRecord();
         Map<String,Integer> outTypeRecord = outRecord.getTypeRecord();
         Map<Double,Integer> outPriceRecord = outRecord.getPriceRecord();
-        for(String key : outNameRecord.keySet()){
-            if(nameRecord.containsKey(key)){
-                nameRecord.put(key,nameRecord.get(key)+outNameRecord.get(key));
-            }else {
-                nameRecord.put(key,outNameRecord.get(key));
+        for (String key : outNameRecord.keySet()) {
+            if (nameRecord.containsKey(key)) {
+                nameRecord.put(key, nameRecord.get(key) + outNameRecord.get(key));
+            } else {
+                nameRecord.put(key, outNameRecord.get(key));
             }
         }
-        for(String key : outTypeRecord.keySet()){
-            if(typeRecord.containsKey(key)){
-                typeRecord.put(key,typeRecord.get(key)+outTypeRecord.get(key));
-            }else {
-                typeRecord.put(key,outTypeRecord.get(key));
+        for (String key : outTypeRecord.keySet()) {
+            if (typeRecord.containsKey(key)) {
+                typeRecord.put(key, typeRecord.get(key) + outTypeRecord.get(key));
+            } else {
+                typeRecord.put(key, outTypeRecord.get(key));
             }
         }
-        for(Double key : outPriceRecord.keySet()){
-            if(priceRecord.containsKey(key)){
-                priceRecord.put(key,priceRecord.get(key)+outPriceRecord.get(key));
-            }else {
-                priceRecord.put(key,outPriceRecord.get(key));
+        for (Double key : outPriceRecord.keySet()) {
+            if (priceRecord.containsKey(key)) {
+                priceRecord.put(key, priceRecord.get(key) + outPriceRecord.get(key));
+            } else {
+                priceRecord.put(key, outPriceRecord.get(key));
             }
         }
         outRecord = null ;
     }
-
-
 
 }
