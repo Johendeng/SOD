@@ -39,6 +39,12 @@ public class UserDataCountBolt  implements IRichBolt {
         //定时持久化数据
         if(input.getSourceComponent().equals(Constants.SYSTEM_COMPONENT_ID)){
             for(String key : userRecord.keySet()){
+                System.out.println("+++++++++++++++++++++++++++user统计获取的数据为++++++++++++++++++++++++++++++++++++");
+                System.out.println(key);
+                System.out.println(userRecord.get(key).getNameRecord().toString());
+                System.out.println(userRecord.get(key).getNameRecord().toString());
+                System.out.println(userRecord.get(key).getNameRecord().toString());
+                System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
                 if (jedis.exists(key)){
                     Record record  = redisOperation.getRecord(key);
                     record.changeRecord(userRecord.get(key));

@@ -11,7 +11,7 @@ import java.util.Properties;
  */
 public class PropertiesUtil {
 
-    public Map getProperties(String propertiesName){
+    public  Map getProperties(String propertiesName){
         Properties prop = new Properties();
         Map<String,String> propertiesItems = new HashMap<>();
         try {
@@ -30,7 +30,5 @@ public class PropertiesUtil {
         }
         return propertiesItems;
     }
-
-
 
 }

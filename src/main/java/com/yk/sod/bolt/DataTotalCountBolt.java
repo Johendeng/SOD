@@ -34,6 +34,13 @@ public class DataTotalCountBolt  implements IRichBolt {
     public void execute(Tuple tuple) {
 //定时持久化数据
         if(tuple.getSourceComponent().equals(Constants.SYSTEM_COMPONENT_ID)){
+            System.out.println("+++++++++++++++++++++++++++总量统计获取的数据为++++++++++++++++++++++++++++++++++++");
+            System.out.println(record.getNameRecord().toString());
+            System.out.println(record.getNameRecord().toString());
+            System.out.println(record.getNameRecord().toString());
+            System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+
+
             if (jedis.exists("totalRecord")){
                 Record record_temp  = redis.getRecord("totalRecord");
                 record_temp.changeRecord(record);
@@ -41,6 +48,7 @@ public class DataTotalCountBolt  implements IRichBolt {
             }else {
                 jedis.set("totalRecord".getBytes(),SerializeUtil.serialize(record));
             }
+
             record = new Record();
             System.out.println("进行了总统计持久化=========");
         }else {
